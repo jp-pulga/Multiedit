@@ -261,22 +261,22 @@ M.prevent_crap = function()
 end
 
 -- mimics sublimes ctrl-d
-keys.cd = multiedit.select_word
-keys.af3 = multiedit.select_all_words
+keys.cd = select_word
+keys.af3 = select_all_words
 
 -- exchange all standard bindings with the multiedit version
-keys['\n'] = multiedit.newline
-keys.left = multiedit.char_left
-keys.cleft = multiedit.word_left
-keys.sleft = multiedit.char_left_extend
-keys.csleft = multiedit.word_left_extend
-keys.right = multiedit.char_right
-keys.sright = multiedit.char_right_extend
-keys.cright = multiedit.word_right
-keys.csright = multiedit.word_right_extend
-keys.home = multiedit.line_start
-keys.shome = multiedit.line_start_extend
-keys["end"] = multiedit.line_end
-keys["send"] = multiedit.line_end_extend
+keys['\n'] = newline
+keys.left = char_left
+keys.cleft = word_left
+keys.sleft = char_left_extend
+keys.csleft = word_left_extend
+keys.right = char_right
+keys.sright = char_right_extend
+keys.cright = word_right
+keys.csright = word_right_extend
+keys.home = line_start
+keys.shome = line_start_extend
+keys["end"] = line_end
+keys["send"] = line_end_extend
 
 return M

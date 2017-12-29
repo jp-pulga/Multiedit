@@ -22,26 +22,10 @@
 -- THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-
-local print = function(...)
-  local tmp = ui.SILENT_PRINT
-  ui.SILENT_PRINT = true
-  ui.print(...)
-  ui.SILENT_PRINT = tmp
-end
-
 local keys = _G.keys
 local editing = _G.textadept.editing
 
 local M = {}
-
-local function get_next_pos(olpos)
-  return buffer:position_relative(olpos, 1)
-end
-
-local function get_prev_pos(olpos)
-  return buffer:position_relative(olpos, -1)
-end
 
 M.select_word = function(prevent_scrolling)
 
@@ -103,7 +87,7 @@ M.enclose = function(left, right)
     if s ~= e then
       buffer.selection_n_end[i] = buffer:position_relative(buffer.selection_n_start[i], #txt)
     else
-      buffer.selection_n_caret[i] = get_next_pos(buffer.selection_n_caret[i])
+      buffer.selection_n_caret[i] = buffer:position_relative(buffer.selection_n_caret[i], 1)
       buffer.selection_n_anchor[i] = buffer.selection_n_caret[i]
     end
   end
@@ -116,93 +100,105 @@ end
 M.char_right = function()
   if buffer.selections < 2 then return false end
   for i = 0, buffer.selections - 1, 1 do
-    buffer.selection_n_start[i] = get_next_pos(buffer.selection_n_end[i])
+    buffer.selection_n_start[i] = buffer:position_relative(buffer.selection_n_end[i], 1)
     buffer.selection_n_end[i] = buffer.selection_n_end[i]
   end
   return true
 end
+
 M.char_right_extend = function()
   if buffer.selections < 2 then return false end
   for i = 0, buffer.selections - 1, 1 do
-    buffer.selection_n_caret[i] = get_next_pos(buffer.selection_n_caret[i])
+    buffer.selection_n_caret[i] = buffer:position_relative(buffer.selection_n_caret[i], 1)
   end
   return true
 end
+
 M.word_right = function()
   if buffer.selections < 2 then return false end
 
   for i = 0, buffer.selections - 1, 1 do
     local nupos = buffer:word_end_position(buffer.selection_n_start[i], true)
     if nupos == buffer.selection_n_start[i] then
-      nupos = get_next_pos(nupos)
+      nupos = buffer:position_relative(nupos, 1)
     end
     buffer.selection_n_start[i] = nupos
     buffer.selection_n_end[i] = nupos
   end
   return true
 end
+
 M.word_right_extend = function()
   if buffer.selections < 2 then return false end
   for i = 0, buffer.selections - 1, 1 do
     local nupos = buffer:word_end_position(buffer.selection_n_caret[i], true)
     if nupos == buffer.selection_n_caret[i] then
-      nupos = get_next_pos(nupos)
+      nupos = buffer:position_relative(nupos, 1)
     end
     buffer.selection_n_caret[i] = nupos
   end
   return true
 end
+
 M.char_left = function()
   if buffer.selections < 2 then return false end
   for i = 0, buffer.selections - 1, 1 do
-    buffer.selection_n_start[i] = get_prev_pos(buffer.selection_n_start[i])
+    buffer.selection_n_start[i] = buffer:position_relative(buffer.selection_n_start[i], -1)
     buffer.selection_n_end[i] = buffer.selection_n_start[i]
   end
   return true
 end
+
 M.char_left_extend = function()
   if buffer.selections < 2 then return false end
   for i = 0, buffer.selections - 1, 1 do
-    buffer.selection_n_caret[i] = get_prev_pos(buffer.selection_n_caret[i])
+    buffer.selection_n_caret[i] = buffer:position_relative(buffer.selection_n_caret[i], -1)
   end
   return true
 end
+
 M.word_left = function()
   if buffer.selections < 2 then return false end
 
   for i = 0, buffer.selections - 1, 1 do
     local nupos = buffer:word_start_position(buffer.selection_n_start[i], true)
     if nupos == buffer.selection_n_start[i] then
-      nupos = get_prev_pos(nupos)
+      nupos = buffer:position_relative(nupos, -1)
     end
     buffer.selection_n_start[i] = nupos
     buffer.selection_n_end[i] = nupos
   end
   return true
 end
+
 M.word_left_extend = function()
   if buffer.selections < 2 then return false end
   for i = 0, buffer.selections - 1, 1 do
     local nupos = buffer:word_start_position(buffer.selection_n_caret[i], true)
     if nupos == buffer.selection_n_caret[i] then
-      nupos = get_prev_pos(nupos)
+      nupos = buffer:position_relative(nupos, -1)
     end
     buffer.selection_n_caret[i] = nupos
   end
   return true
 end
+
 M.line_down = function()
   if buffer.selections < 2 then return false end
 end
+
 M.line_down_extend = function()
   if buffer.selections < 2 then return false end
 end
+
 M.line_up = function()
   if buffer.selections < 2 then return false end
 end
+
 M.line_up_extend = function()
   if buffer.selections < 2 then return false end
 end
+
 M.line_start = function()
   if buffer.selections < 2 then return false end
   for i = 0, buffer.selections - 1, 1 do
@@ -212,6 +208,7 @@ M.line_start = function()
   end
   return true
 end
+
 M.line_start_extend = function()
   if buffer.selections < 2 then return false end
   for i = 0, buffer.selections - 1, 1 do
@@ -220,6 +217,7 @@ M.line_start_extend = function()
   end
   return true
 end
+
 M.line_end = function()
   if buffer.selections < 2 then return false end
   for i = 0, buffer.selections - 1, 1 do
@@ -229,6 +227,7 @@ M.line_end = function()
   end
   return true
 end
+
 M.line_end_extend = function()
   if buffer.selections < 2 then return false end
   for i = 0, buffer.selections - 1, 1 do
@@ -237,13 +236,14 @@ M.line_end_extend = function()
   end
   return true
 end
+
 M.page_up_extend = function()
   if buffer.selections < 2 then return false end
 end
+
 M.page_down_extend = function()
   if buffer.selections < 2 then return false end
 end
-
 
 M.newline = function()
   if buffer.selections < 2 then return false end
@@ -256,10 +256,27 @@ M.newline = function()
   return true
 end
 
-
 M.prevent_crap = function()
   if buffer.selections > 2 then return true end
 end
 
+-- mimics sublimes ctrl-d
+keys.cd = multiedit.select_word
+keys.af3 = multiedit.select_all_words
+
+-- exchange all standard bindings with the multiedit version
+keys['\n'] = multiedit.newline
+keys.left = multiedit.char_left
+keys.cleft = multiedit.word_left
+keys.sleft = multiedit.char_left_extend
+keys.csleft = multiedit.word_left_extend
+keys.right = multiedit.char_right
+keys.sright = multiedit.char_right_extend
+keys.cright = multiedit.word_right
+keys.csright = multiedit.word_right_extend
+keys.home = multiedit.line_start
+keys.shome = multiedit.line_start_extend
+keys["end"] = multiedit.line_end
+keys["send"] = multiedit.line_end_extend
 
 return M

@@ -296,22 +296,22 @@ M.page_down_extend = function()
 end
 
 -- mimics sublimes ctrl-d and alf-f3
-keys.cd = select_word
-keys.af3 = select_all_words
+keys.cd = M.select_word
+keys.af3 = M.select_all_words
 
 -- exchange all standard bindings with the multiedit version
-keys['\n'] = newline
-keys.left = char_left
-keys.cleft = word_left
-keys.sleft = char_left_extend
-keys.csleft = word_left_extend
-keys.right = char_right
-keys.sright = char_right_extend
-keys.cright = word_right
-keys.csright = word_right_extend
-keys.home = line_start
-keys.shome = line_start_extend
-keys["end"] = line_end
-keys["send"] = line_end_extend
+keys['\n'] = M.newline
+keys.left = M.char_left
+keys.cleft = M.word_left
+keys.sleft = M.char_left_extend
+keys.csleft = M.word_left_extend
+keys.right = M.char_right
+keys.sright = M.char_right_extend
+keys.cright = M.word_right
+keys.csright = M.word_right_extend
+keys.home = M.line_start
+keys.shome = M.line_start_extend
+keys["end"] = M.line_end
+keys["send"] = M.line_end_extend
 
 return M
